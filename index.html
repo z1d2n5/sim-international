@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIM Academy — Présentation Officielle</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+
+  .nav { display: flex; justify-content: space-between; align-items: center; background: #1a1a2e; padding: 12px 24px; position: sticky; top: 0; z-index: 100; }
+  .nav-title { color: #fff; font-size: 14px; font-weight: 600; }
+  .nav-btns button { background: #e94560; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-left: 8px; }
+  .nav-btns button.prev { background: #16213e; }
+  .slide-counter { color: #aaa; font-size: 13px; }
+
+  .slides-container { width: 100%; max-width: 900px; margin: 24px auto; padding: 0 16px; }
+
+  .slide { display: none; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-height: 500px; }
+  .slide.active { display: flex; flex-direction: column; }
+
+  .slide-cover { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #fff; justify-content: center; align-items: center; text-align: center; padding: 60px 40px; }
+  .slide-cover .logo { font-size: 52px; margin-bottom: 16px; }
+  .slide-cover h1 { font-size: 38px; font-weight: 800; letter-spacing: 3px; color: #e94560; }
+  .slide-cover h2 { font-size: 17px; font-weight: 400; margin-top: 8px; color: #ccc; }
+  .slide-cover .tagline { margin-top: 24px; font-size: 14px; color: #e94560; border: 1px solid #e94560; padding: 8px 24px; border-radius: 20px; display: inline-block; }
+  .slide-cover .locations { margin-top: 20px; color: #aaa; font-size: 13px; }
+  .slide-cover .locations span { margin: 0 10px; }
+
+  .slide-header { background: linear-gradient(90deg, #1a1a2e, #0f3460); padding: 22px 36px; }
+  .slide-header h2 { color: #e94560; font-size: 21px; font-weight: 700; }
+  .slide-header p { color: #aaa; font-size: 13px; margin-top: 4px; }
+  .slide-body { padding: 28px 36px; flex: 1; overflow-y: auto; }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .card { background: #f8fafc; border-left: 4px solid #e94560; border-radius: 10px; padding: 14px; }
+  .card h3 { color: #1a1a2e; font-size: 14px; margin-bottom: 6px; font-weight: 700; }
+  .card p { color: #555; font-size: 12px; line-height: 1.6; }
+
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tab { padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 2px solid #e94560; color: #e94560; background: #fff; font-weight: 600; transition: all 0.2s; }
+  .tab.active { background: #e94560; color: #fff; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .formation-item { display: flex; align-items: flex-start; gap: 12px; background: #f8fafc; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+  .formation-icon { font-size: 26px; min-width: 36px; text-align: center; }
+  .formation-item h3 { color: #1a1a2e; font-size: 13px; font-weight: 700; }
+  .formation-item p { color: #666; font-size: 12px; margin-top: 3px; line-height: 1.5; }
+
+  .lang-hero { background: linear-gradient(135deg, #1a1a2e, #0f3460); border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .lang-hero h3 { color: #fff; font-size: 15px; font-weight: 800; }
+  .lang-hero p { color: #aaa; font-size: 12px; margin-top: 2px; }
+  .lang-hero .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .lang-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .lang-card { background: #f8fafc; border-radius: 12px; padding: 14px; border-top: 3px solid #e94560; }
+  .lang-card h3 { color: #1a1a2e; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .lang-card .levels { display: flex; flex-wrap: wrap; gap: 5px; }
+  .level-badge { background: #1a1a2e; color: #fff; font-size: 10px; padding: 3px 9px; border-radius: 12px; }
+  .cert-badge { background: #e94560; color: #fff; font-size: 10px; padding: 3px 9px; border-radius: 12px; font-weight: 700; }
+
+  .visa-steps { display: flex; flex-direction: column; gap: 10px; }
+  .visa-step { display: flex; align-items: flex-start; gap: 14px; background: #f8fafc; border-radius: 10px; padding: 12px 16px; }
+  .step-num { background: #e94560; color: #fff; font-size: 13px; font-weight: 800; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; min-width: 28px; }
+  .visa-step h3 { color: #1a1a2e; font-size: 13px; font-weight: 700; }
+  .visa-step p { color: #666; font-size: 12px; margin-top: 3px; }
+  .visa-warning { background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-size: 12px; color: #856404; }
+
+  .digital-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .digital-card { background: #1a1a2e; border-radius: 12px; padding: 18px; text-align: center; color: #fff; }
+  .digital-card .icon { font-size: 28px; margin-bottom: 8px; }
+  .digital-card h3 { font-size: 12px; color: #e94560; font-weight: 700; }
+  .digital-card p { font-size: 11px; color: #bbb; margin-top: 5px; }
+
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .contact-box { background: #f8fafc; border-radius: 12px; padding: 18px; border-top: 4px solid #e94560; }
+  .contact-box h3 { color: #1a1a2e; font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+  .contact-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+  .contact-row .icon { font-size: 16px; }
+  .contact-row p { font-size: 12px; color: #444; }
+
+  .slide-cta { background: linear-gradient(135deg, #e94560, #c0392b); color: #fff; justify-content: center; align-items: center; text-align: center; padding: 60px 40px; }
+  .slide-cta h2 { font-size: 26px; font-weight: 800; }
+  .slide-cta p { font-size: 15px; margin-top: 12px; opacity: 0.9; }
+  .cta-btn { margin-top: 28px; background: #fff; color: #e94560; padding: 12px 32px; border-radius: 30px; font-weight: 700; font-size: 14px; display: inline-block; }
+
+  .thumbnails { display: flex; gap: 8px; justify-content: center; margin: 14px 0 24px; flex-wrap: wrap; }
+  .thumb { width: 10px; height: 10px; border-radius: 50%; background: #ccc; cursor: pointer; transition: all 0.3s; }
+  .thumb.active { background: #e94560; width: 24px; border-radius: 6px; }
+
+  .tag { display: inline-block; background: #f0f4f8; color: #1a1a2e; font-size: 11px; padding: 3px 8px; border-radius: 8px; margin: 2px; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <span class="nav-title">📊 SIM Academy — Présentation Officielle</span>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="slide-counter" id="counter">1 / 8</span>
+    <div class="nav-btns">
+      <button class="prev" onclick="changeSlide(-1)">◀ Précédent</button>
+      <button onclick="changeSlide(1)">Suivant ▶</button>
+    </div>
+  </div>
+</div>
+
+<div class="slides-container">
+
+  <!-- Slide 1 — Couverture -->
+  <div class="slide slide-cover active">
+    <div class="logo">🎓</div>
+    <h1>SIM ACADEMY</h1>
+    <h2>École de Formation Internationale & Digitale</h2>
+    <div class="tagline">Former. Innover. Réussir.</div>
+    <div class="locations">
+      <span>📍 Douala, Cameroun</span> &nbsp;|&nbsp; <span>📍 Berlin, Allemagne</span>
+    </div>
+  </div>
+
+  <!-- Slide 2 — Qui sommes-nous -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2>🏫 Qui sommes-nous ?</h2>
+      <p>Notre identité, mission et vision</p>
+    </div>
+    <div class="slide-body">
+      <div class="cards">
+        <div class="card">
+          <h3>📌 Présentation</h3>
+          <p>SIM Academy est une école de formation internationale et digitale, filiale de Cameroon Business Incubator (CBI SARL), fondée en 2018. Présente à Douala et à Berlin.</p>
+        </div>
+        <div class="card">
+          <h3>🎯 Notre Mission</h3>
+          <p>Offrir à chacun la possibilité de développer ses compétences grâce à des programmes de qualité adaptés au marché du travail local et international.</p>
+        </div>
+        <div class="card">
+          <h3>🌍 Notre Vision</h3>
+          <p>Devenir une référence de la formation digitale en Afrique et en Europe, en connectant les apprenants aux opportunités mondiales.</p>
+        </div>
+        <div class="card">
+          <h3>💡 Notre Pédagogie</h3>
+          <p>Moderne, interactive et personnalisée. Cours en présentiel et en ligne, assurés par des enseignants qualifiés, avec suivi individuel de chaque apprenant.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3 — Formations Universitaires -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2>🎓 Formations Universitaires</h2>
+      <p>BTS · Licence · Master · MBA Européens</p>
+    </div>
+    <div class="slide-body">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this,'bts')">BTS</div>
+        <div class="tab" onclick="switchTab(this,'licence')">Licence</div>
+        <div class="tab" onclick="switchTab(this,'master')">Master</div>
+        <div class="tab" onclick="switchTab(this,'mba')">MBA</div>
+      </div>
+      <div class="tab-content active" id="bts">
+        <div class="formation-item"><div class="formation-icon">💼</div><div><h3>Management</h3><p>Assistant(e) de Gestion des PME · Assistant(e) des Ressources Humaines</p></div></div>
+        <div class="formation-item"><div class="formation-icon">📣</div><div><h3>Marketing</h3><p>Assistant(e) Marketing</p></div></div>
+        <div class="formation-item"><div class="formation-icon">💻</div><div><h3>Digital</h3><p>Animateur Esport · Sciences informatiques et nouvelles technologies</p></div></div>
+        <div class="formation-item"><div class="formation-icon">✈️</div><div><h3>Tourisme</h3><p>Stratégie et durabilité touristique</p></div></div>
+      </div>
+      <div class="tab-content" id="licence">
+        <div class="formation-item"><div class="formation-icon">💼</div><div><h3>Management & Finance</h3><p>GRH · Management PME · Finance · Banque & Assurance · Gestion du Patrimoine</p></div></div>
+        <div class="formation-item"><div class="formation-icon">📣</div><div><h3>Marketing & Communication</h3><p>Business Developer · E-commerce · Marketing Digital · Journalisme · Communication</p></div></div>
+        <div class="formation-item"><div class="formation-icon">💻</div><div><h3>Digital & IT</h3><p>Cybersécurité · Data Analysis · Développement d'applications · Systèmes connectés</p></div></div>
+        <div class="formation-item"><div class="formation-icon">🌿</div><div><h3>Autres</h3><p>Logistique · Tourisme & Hôtellerie · Qualité-Sécurité-Environnement · Bien-être</p></div></div>
+      </div>
+      <div class="tab-content" id="master">
+        <div class="formation-item"><div class="formation-icon">💼</div><div><h3>Management & Finance</h3><p>Management Digital · RH · Stratégie d'Entreprise · Stratégies Financières · Banque Privée</p></div></div>
+        <div class="formation-item"><div class="formation-icon">💻</div><div><h3>Expert IT</h3><p>Cybersécurité · Big Data · Applications intelligentes · Pilotage des SI</p></div></div>
+        <div class="formation-item"><div class="formation-icon">📣</div><div><h3>Marketing & Commerce</h3><p>Communication Numérique · E-Business · Commerce International</p></div></div>
+        <div class="formation-item"><div class="formation-icon">🌿</div><div><h3>Autres</h3><p>Logistique · Tourisme · Droit des Affaires · Management Environnemental</p></div></div>
+      </div>
+      <div class="tab-content" id="mba">
+        <div class="formation-item"><div class="formation-icon">💼</div><div><h3>Management & RH</h3><p>Management stratégique des Organisations · Stratégies Financières · RH Internationales</p></div></div>
+        <div class="formation-item"><div class="formation-icon">💻</div><div><h3>Digital</h3><p>Pilotage des systèmes d'information</p></div></div>
+        <div class="formation-item"><div class="formation-icon">🚛</div><div><h3>Logistique</h3><p>Management de la Supply Chain</p></div></div>
+        <div class="formation-item"><div class="formation-icon">✈️</div><div><h3>Tourisme</h3><p>Management et Innovation Touristiques</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 4 — Langues & Certifications -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2>🗣️ Formations en Langues & Certifications</h2>
+      <p>6 langues · Tous niveaux · Certifications internationales reconnues</p>
+    </div>
+    <div class="slide-body">
+      <div class="lang-hero">
+        <div>
+          <h3>🇩🇪 Allemand Intensif — Cours Gratuits</h3>
+          <p>Tous niveaux disponibles · Préparation aux certifications officielles</p>
+        </div>
+        <div class="badges">
+          <span class="cert-badge">🏅 Goethe</span>
+          <span class="cert-badge">🏅 ÖSD</span>
+          <span class="cert-badge">🏅 ECL</span>
+          <span class="cert-badge">🏅 FEDE</span>
+        </div>
+      </div>
+      <div class="lang-grid">
+        <div class="lang-card">
+          <h3>🇩🇪 Allemand</h3>
+          <div class="levels">
+            <span class="level-badge">A1</span><span class="level-badge">A2</span><span class="level-badge">B1</span><span class="level-badge">B2</span><span class="level-badge">C1</span><span class="level-badge">C2</span>
+            <span class="level-badge">Beruf B1/B2</span>
+            <span class="level-badge">Gesundheit</span>
+            <span class="level-badge">Logistik</span>
+          </div>
+        </div>
+        <div class="lang-card">
+          <h3>🇬🇧 Anglais</h3>
+          <div class="levels">
+            <span class="level-badge">Tous niveaux</span>
+            <span class="level-badge">Business English</span>
+          </div>
+          <div class="levels" style="margin-top:6px">
+            <span class="cert-badge">🏅 IELTS</span>
+            <span class="cert-badge">🏅 TOEFL</span>
+          </div>
+        </div>
+        <div class="lang-card">
+          <h3>🇫🇷 Français</h3>
+          <div class="levels">
+            <span class="level-badge">Tous niveaux</span>
+            <span class="level-badge">FLE</span>
+          </div>
+          <div class="levels" style="margin-top:6px">
+            <span class="cert-badge">🏅 TCF</span>
+            <span class="cert-badge">🏅 DELF/DALF</span>
+          </div>
+        </div>
+        <div class="lang-card">
+          <h3>🇪🇸 Espagnol</h3>
+          <div class="levels">
+            <span class="level-badge">Tous niveaux</span>
+            <span class="level-badge">DELE</span>
+          </div>
+        </div>
+        <div class="lang-card">
+          <h3>🇮🇹 Italien</h3>
+          <div class="levels">
+            <span class="level-badge">Tous niveaux</span>
+            <span class="level-badge">CILS</span>
+          </div>
+        </div>
+        <div class="lang-card">
+          <h3>🇨🇳 Chinois</h3>
+          <div class="levels">
+            <span class="level-badge">Initiation</span>
+            <span class="level-badge">HSK</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 5 — Formations Pro & Continue -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2>💼 Formations Professionnelles & Continues</h2>
+      <p>Pré-formations métiers · Formation continue · Insertion professionnelle</p>
+    </div>
+    <div class="slide-body">
+      <div class="formation-item"><div class="formation-icon">🏥</div><div><h3>Santé & Pflege</h3><p>Soins de base, anatomie, hygiène, communication avec les patients, premiers secours, introduction à la gériatrie.</p></div></div>
+      <div class="formation-item"><div class="formation-icon">🏗️</div><div><h3>Bâtiment & Artisanat</h3><p>Sécurité chantier, matériaux, maçonnerie, peinture, outillage, introduction au bâtiment durable.</p></div></div>
+      <div class="formation-item"><div class="formation-icon">🚛</div><div><h3>Logistique & Entrepôt</h3><p>Supply chain, gestion des stocks, réception/expédition, outils WMS, qualité et inventaire.</p></div></div>
+      <div class="formation-item"><div class="formation-icon">📊</div><div><h3>Vente & IT Digital</h3><p>Techniques de vente, CRM, marketing, gestion de projet, MS Office, programmation, cybersécurité.</p></div></div>
+      <div class="formation-item"><div class="formation-icon">🌐</div><div><h3>Insertion Professionnelle</h3><p>Orientation, coaching candidature, soft skills, préparation aux examens, ateliers pratiques.</p></div></div>
+    </div>
+  </div>
+
+  <!-- Slide 6 — Assistance Visa & Admin -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2>✈️ Assistance Visa & Administrative</h2>
+      <p>Votre projet international commence ici — étape par étape</p>
+    </div>
+    <div class="slide-body">
+      <div class="visa-steps">
+        <div class="visa-step">
+          <div class="step-num">1</div>
+          <div><h3>📋 Information & Orientation</h3><p>Nous vous informons sur les types de visas disponibles selon votre projet (études, travail, tourisme) et vous orientons vers la bonne démarche.</p></div>
+        </div>
+        <div class="visa-step">
+          <div class="step-num">2</div>
+          <div><h3>📁 Constitution du Dossier</h3><p>Aide à la préparation de la check-list complète, vérification de la cohérence des documents et classement de votre dossier.</p></div>
+        </div>
+        <div class="visa-step">
+          <div class="step-num">3</div>
+          <div><h3>✍️ Remplissage des Formulaires</h3><p>Accompagnement dans le remplissage des formulaires officiels (ambassade, TLS, BLS, VFS, Ausländerbehörde).</p></div>
+        </div>
+        <div class="visa-step">
+          <div class="step-num">4</div>
+          <div><h3>📅 Prise de Rendez-vous</h3><p>Assistance pour la prise de rendez-vous auprès des institutions compétentes selon votre destination.</p></div>
+        </div>
+        <div class="visa-step">
+          <div class="step-num">5</div>
+          <div><h3>🗣️ Assistance Linguistique</h3><p>Traduction, explication des documents et accompagnement lors des démarches nécessitant une maîtrise de la langue.</p></div>
+        </div>
+      </div>
+      <div class="visa-warning">
+        ⚠️ <strong>Important :</strong> SIM Academy fournit une assistance administrative et informative uniquement. Nous ne fournissons pas de conseil juridique personnalisé ni de garantie d'obtention de visa ou titre de séjour.
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 7 — Approche Digitale -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2>🌍 Notre Approche Digitale & Internationale</h2>
+      <p>Une école connectée, accessible partout dans le monde</p>
+    </div>
+    <div class="slide-body">
+      <div class="digital-grid">
+        <div class="digital-card"><div class="icon">💻</div><h3>Plateforme E-learning</h3><p>Accès aux cours en ligne, progressivement, depuis n'importe quel appareil.</p></div>
+        <div class="digital-card"><div class="icon">🎥</div><h3>Cours en Live</h3><p>Sessions interactives en direct avec les formateurs, questions en temps réel.</p></div>
+        <div class="digital-card"><div class="icon">📱</div><h3>Communauté Active</h3><p>Groupe WhatsApp officiel (Cameroon Desk) · Réseaux sociaux actifs.</p></div>
+        <div class="digital-card"><div class="icon">🌐</div><h3>Présence Internationale</h3><p>Bureaux à Douala et Berlin. Certifications reconnues en Europe.</p></div>
+        <div class="digital-card"><div class="icon">📜</div><h3>Certifications</h3><p>Goethe · ÖSD · IELTS · TOEFL · TCF · ECL · FEDE et autres certifications reconnues.</p></div>
+        <div class="digital-card"><div class="icon">🤝</div><h3>Suivi Personnalisé</h3><p>Accompagnement individuel de chaque apprenant tout au long de sa formation.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8 — Contact -->
+  <div class="slide">
+    <div class="slide-header">
+      <h2>📞 Nous Contacter</h2>
+      <p>Deux agences à votre service — Douala & Berlin</p>
+    </div>
+    <div class="slide-body">
+      <div class="contact-grid">
+        <div class="contact-box">
+          <h3>📍 Douala — Cameroun</h3>
+          <div class="contact-row"><span class="icon">🏠</span><p>Bonamoussadi – Douala (À l'entrée, en face de Opium Gold)</p></div>
+          <div class="contact-row"><span class="icon">📞</span><p>+237 699 627 121 / +237 680 792 148</p></div>
+          <div class="contact-row"><span class="icon">📧</span><p>info@sim-academie.com</p></div>
+          <div class="contact-row"><span class="icon">🌐</span><p>www.sim-academie.com</p></div>
+        </div>
+        <div class="contact-box">
+          <h3>📍 Berlin — Allemagne</h3>
+          <div class="contact-row"><span class="icon">🏠</span><p>Neumagenerstr. 23, 13088 Berlin</p></div>
+          <div class="contact-row"><span class="icon">📞</span><p>+49 176 106 987 31</p></div>
+          <div class="contact-row"><span class="icon">📧</span><p>info@sim-academie.com</p></div>
+          <div class="contact-row"><span class="icon">🌐</span><p>www.sim-academie.com</p></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;text-align:center">
+        <p style="font-size:13px;color:#888;margin-bottom:8px">Retrouvez-nous sur les réseaux sociaux</p>
+        <span class="tag">📘 Facebook</span>
+        <span class="tag">📸 Instagram</span>
+        <span class="tag">🎵 TikTok</span>
+        <span class="tag">💼 LinkedIn</span>
+        <span class="tag">🐦 X (Twitter)</span>
+        <span class="tag">👻 Snapchat</span>
+        <span class="tag">💬 WhatsApp — Cameroon Desk</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="thumbnails" id="thumbs"></div>
+
+<script>
+  let cur = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const thumbsEl = document.getElementById('thumbs');
+
+  slides.forEach((_, i) => {
+    const t = document.createElement('div');
+    t.className = 'thumb' + (i === 0 ? ' active' : '');
+    t.onclick = () => goTo(i);
+    thumbsEl.appendChild(t);
+  });
+
+  function goTo(n) {
+    slides[cur].classList.remove('active');
+    thumbsEl.children[cur].classList.remove('active');
+    cur = (n + total) % total;
+    slides[cur].classList.add('active');
+    thumbsEl.children[cur].classList.add('active');
+    document.getElementById('counter').textContent = (cur + 1) + ' / ' + total;
+  }
+
+  function changeSlide(dir) { goTo(cur + dir); }
+
+  function switchTab(el, id) {
+    const parent = el.closest('.slide-body');
+    parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    parent.querySelector('#' + id).classList.add('active');
+  }
+</script>
+</body>
+</html>
